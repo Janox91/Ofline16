@@ -450,7 +450,27 @@ class VigilanciaApp {
     }
 
     setupDateInputs() {
-        const today = new Date().toISOString().split('T')[0];
+        // Función para obtener la fecha actual en formato YYYY-MM-DD
+        const getCurrentDate = () => {
+            const now = new Date();
+            return now.toISOString().split('T')[0];
+        };
+
+        // Función para actualizar la fecha automáticamente
+        const updateCurrentDate = () => {
+            const currentDate = getCurrentDate();
+            const attendanceDate = document.getElementById('attendanceDate');
+            
+            if (attendanceDate && attendanceDate.value !== currentDate) {
+                attendanceDate.value = currentDate;
+                this.renderAttendance();
+                this.updateDashboard();
+                this.showFeedbackMessage(`Fecha actualizada automáticamente a ${currentDate}`, 'success');
+            }
+        };
+
+        // Establecer fecha inicial
+        const today = getCurrentDate();
         
         // Fecha de asistencia
         const attendanceDate = document.getElementById('attendanceDate');
@@ -479,6 +499,31 @@ class VigilanciaApp {
             const currentMonth = new Date().toISOString().slice(0, 7);
             planillaMonth.value = currentMonth;
         }
+
+        // Configurar actualización automática de fecha
+        this.setupAutoDateUpdate(updateCurrentDate);
+    }
+
+    setupAutoDateUpdate(updateFunction) {
+        // Verificar cada minuto si la fecha cambió
+        setInterval(() => {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            
+            // Si son las 00:00, actualizar la fecha
+            if (currentHour === 0 && currentMinute === 0) {
+                updateFunction();
+            }
+        }, 60000); // Verificar cada minuto
+
+        // Actualizar la hora cada segundo
+        setInterval(() => {
+            this.updateCurrentTime();
+        }, 1000); // Actualizar cada segundo
+
+        // También verificar al cargar la página
+        updateFunction();
     }
 
     switchView(viewName) {
@@ -1156,6 +1201,9 @@ class VigilanciaApp {
     updateDashboard() {
         const today = new Date().toISOString().split('T')[0];
         
+        // Actualizar hora y fecha actual
+        this.updateCurrentTime();
+        
         const totalEmployeesEl = document.getElementById('totalEmployees');
         if (totalEmployeesEl) totalEmployeesEl.textContent = this.employees.length;
         
@@ -1180,6 +1228,31 @@ class VigilanciaApp {
         // --- Gráfica de asistencia mensual ---
         renderAsistenciaChart(this.employees, this.attendance);
         renderAsistenciaPorcentajes(this.employees, this.attendance);
+    }
+
+    updateCurrentTime() {
+        const now = new Date();
+        
+        // Actualizar hora en formato 24 horas
+        const timeElement = document.getElementById('currentTime');
+        if (timeElement) {
+            timeElement.textContent = now.toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+        
+        // Actualizar fecha
+        const dateElement = document.getElementById('currentDate');
+        if (dateElement) {
+            dateElement.textContent = now.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
     }
 
     getTodayStats(date) {
@@ -1259,7 +1332,7 @@ class VigilanciaApp {
                 return `
                     <div class="summary-item">
                         <div>${details}</div>
-                        <small>${new Date(record.timestamp).toLocaleTimeString()}</small>
+                        <small>${new Date(record.timestamp).toLocaleTimeString('es-ES', {hour: '2-digit', minute: '2-digit', hour12: false})}</small>
                     </div>
                 `;
             }).join('');

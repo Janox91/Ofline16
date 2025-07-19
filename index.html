@@ -158,6 +158,13 @@
         <main class="app-main" role="main">
             <!-- Dashboard View -->
             <div id="dashboard" class="view active" role="region" aria-label="Dashboard">
+                <!-- Indicador de hora actual -->
+                <div style="text-align:center;margin-bottom:1.5rem;padding:1rem;background:linear-gradient(135deg,#00b2c6,#1976D2);color:#fff;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="font-size:1.2rem;font-weight:600;margin-bottom:0.5rem;">Hora Actual</div>
+                    <div id="currentTime" style="font-size:2rem;font-weight:bold;font-family:monospace;">--:--:--</div>
+                    <div id="currentDate" style="font-size:1rem;margin-top:0.5rem;">--/--/----</div>
+                </div>
+                
                 <div class="dashboard-grid">
                     <div class="dashboard-card" role="region" aria-label="Total de personal">
                         <h3>Total Personal</h3>
