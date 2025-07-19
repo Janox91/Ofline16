@@ -458,10 +458,13 @@ class VigilanciaApp {
     }
 
     setupDateInputs() {
-        // Función para obtener la fecha actual en formato YYYY-MM-DD
+        // Función para obtener la fecha actual en formato YYYY-MM-DD (fecha local)
         const getCurrentDate = () => {
             const now = new Date();
-            return now.toISOString().split('T')[0];
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
         };
 
         // Función para actualizar la fecha automáticamente
@@ -497,14 +500,20 @@ class VigilanciaApp {
             // Establecer fechas por defecto (último mes)
             const lastMonth = new Date();
             lastMonth.setMonth(lastMonth.getMonth() - 1);
-            reportStartDate.value = lastMonth.toISOString().split('T')[0];
+            const lastMonthYear = lastMonth.getFullYear();
+            const lastMonthMonth = (lastMonth.getMonth() + 1).toString().padStart(2, '0');
+            const lastMonthDay = lastMonth.getDate().toString().padStart(2, '0');
+            reportStartDate.value = `${lastMonthYear}-${lastMonthMonth}-${lastMonthDay}`;
             reportEndDate.value = today;
         }
 
         // Mes de planilla
         const planillaMonth = document.getElementById('planillaMonth');
         if (planillaMonth) {
-            const currentMonth = new Date().toISOString().slice(0, 7);
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const currentMonth = `${year}-${month}`;
             planillaMonth.value = currentMonth;
         }
 
@@ -842,7 +851,10 @@ class VigilanciaApp {
                     if (!isNaN(inicio.getTime()) && cantidad > 0) {
                         const retorno = new Date(inicio);
                         retorno.setDate(retorno.getDate() + cantidad);
-                        fechaRetorno.value = retorno.toISOString().split('T')[0];
+                        const retornoYear = retorno.getFullYear();
+                        const retornoMonth = (retorno.getMonth() + 1).toString().padStart(2, '0');
+                        const retornoDay = retorno.getDate().toString().padStart(2, '0');
+                        fechaRetorno.value = `${retornoYear}-${retornoMonth}-${retornoDay}`;
                     } else {
                         fechaRetorno.value = '';
                     }
@@ -1046,7 +1058,10 @@ class VigilanciaApp {
                 for (let i = 0; i < dias; i++) {
                     const d = new Date(fechaInicio);
                     d.setDate(d.getDate() + i);
-                    const fechaStr = d.toISOString().split('T')[0];
+                    const fechaYear = d.getFullYear();
+                    const fechaMonth = (d.getMonth() + 1).toString().padStart(2, '0');
+                    const fechaDay = d.getDate().toString().padStart(2, '0');
+                    const fechaStr = `${fechaYear}-${fechaMonth}-${fechaDay}`;
                     const multiRecord = {
                         employeeId,
                         date: fechaStr,
@@ -1207,7 +1222,11 @@ class VigilanciaApp {
 
     // Dashboard
     updateDashboard() {
-        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const today = `${year}-${month}-${day}`;
         
         // Actualizar hora y fecha actual
         this.updateCurrentTime();
@@ -2441,8 +2460,16 @@ class VigilanciaApp {
         if (controlStartDate && controlEndDate) {
             const lastMonth = new Date();
             lastMonth.setMonth(lastMonth.getMonth() - 1);
-            controlStartDate.value = lastMonth.toISOString().split('T')[0];
-            controlEndDate.value = new Date().toISOString().split('T')[0];
+            const lastMonthYear = lastMonth.getFullYear();
+            const lastMonthMonth = (lastMonth.getMonth() + 1).toString().padStart(2, '0');
+            const lastMonthDay = lastMonth.getDate().toString().padStart(2, '0');
+            controlStartDate.value = `${lastMonthYear}-${lastMonthMonth}-${lastMonthDay}`;
+            
+            const now = new Date();
+            const nowYear = now.getFullYear();
+            const nowMonth = (now.getMonth() + 1).toString().padStart(2, '0');
+            const nowDay = now.getDate().toString().padStart(2, '0');
+            controlEndDate.value = `${nowYear}-${nowMonth}-${nowDay}`;
         }
     }
 
