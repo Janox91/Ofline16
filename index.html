@@ -562,6 +562,31 @@
             };
             // El icono inicial debe ser el cerrado
             eyeIcon.innerHTML = svgClosed;
+            
+            // Inicializar reloj inmediatamente
+            function updateClock() {
+                const now = new Date();
+                const timeElement = document.getElementById('currentTime');
+                const dateElement = document.getElementById('currentDate');
+                
+                if (timeElement) {
+                    const hours = now.getHours().toString().padStart(2, '0');
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    const seconds = now.getSeconds().toString().padStart(2, '0');
+                    timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+                
+                if (dateElement) {
+                    const day = now.getDate().toString().padStart(2, '0');
+                    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                    const year = now.getFullYear();
+                    dateElement.textContent = `${day}/${month}/${year}`;
+                }
+            }
+            
+            // Actualizar reloj cada segundo
+            updateClock();
+            setInterval(updateClock, 1000);
         });
     </script>
 

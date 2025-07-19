@@ -141,6 +141,10 @@ class VigilanciaApp {
         
         this.setupEventListeners();
         this.setupDateInputs();
+        
+        // Inicializar el reloj inmediatamente
+        this.updateCurrentTime();
+        
         this.updateDashboard();
         this.renderEmployees();
         this.renderAttendance();
@@ -229,6 +233,10 @@ class VigilanciaApp {
             // Inicializar la aplicación
             this.setupEventListeners();
             this.setupDateInputs();
+            
+            // Inicializar el reloj inmediatamente
+            this.updateCurrentTime();
+            
             this.updateDashboard();
             this.renderEmployees();
             this.renderAttendance();
@@ -1231,27 +1239,51 @@ class VigilanciaApp {
     }
 
     updateCurrentTime() {
-        const now = new Date();
-        
-        // Actualizar hora en formato 24 horas
-        const timeElement = document.getElementById('currentTime');
-        if (timeElement) {
-            timeElement.textContent = now.toLocaleTimeString('es-ES', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            });
-        }
-        
-        // Actualizar fecha
-        const dateElement = document.getElementById('currentDate');
-        if (dateElement) {
-            dateElement.textContent = now.toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
+        try {
+            const now = new Date();
+            
+            // Actualizar hora en formato 24 horas
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                const timeString = now.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                timeElement.textContent = timeString;
+            }
+            
+            // Actualizar fecha
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                const dateString = now.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                dateElement.textContent = dateString;
+            }
+        } catch (error) {
+            console.error('Error actualizando hora:', error);
+            // Fallback: mostrar hora manualmente si hay error
+            const now = new Date();
+            const timeElement = document.getElementById('currentTime');
+            const dateElement = document.getElementById('currentDate');
+            
+            if (timeElement) {
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            
+            if (dateElement) {
+                const day = now.getDate().toString().padStart(2, '0');
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const year = now.getFullYear();
+                dateElement.textContent = `${day}/${month}/${year}`;
+            }
         }
     }
 
